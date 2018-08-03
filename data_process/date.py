@@ -115,3 +115,7 @@ def get_start_end_yearly(date):
 
 def to_month_abbreviated_format(date_str):
     return datetime.datetime.strptime(date_str, DATE_FORMAT_MONTH).strftime(DATE_FORMAT_MONTH_ABBR)
+
+
+def convert_date_format(date_str, in_format, out_format):
+    return datetime.datetime.strptime(date_str, in_format).strftime(out_format)
