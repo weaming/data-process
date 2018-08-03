@@ -3,7 +3,7 @@ from .io_files import file_list_in
 from .filter_date import filter_date_by_date_range
 
 
-def collect_csv_data_in_dir(data_dir, pattern, get_date_fn, start=None, end=None, fields=None):
+def collect_csv_data_in_dir(data_dir, pattern, get_date_fn, start=None, end=None, fields=None, csv_format=None):
     """
     :param data_dir: in which directory to search files
     :param pattern: pattern to search files
@@ -11,6 +11,8 @@ def collect_csv_data_in_dir(data_dir, pattern, get_date_fn, start=None, end=None
     :param start:
     :param end:
     :param fields: needed if csv data miss headers
+    :param csv_format: e.g. {delimiter=',', quotechar='"'}
+
     :return: files, data
     """
     import os
@@ -31,6 +33,6 @@ def collect_csv_data_in_dir(data_dir, pattern, get_date_fn, start=None, end=None
     if not files:
         return None, None
 
-    data = merge_csv_list([os.path.join(data_dir, l) for l in files], fields=fields)
+    data = merge_csv_list([os.path.join(data_dir, l) for l in files], fields=fields, csv_format=csv_format)
 
     return files, data
