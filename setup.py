@@ -14,7 +14,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 name = 'data-process'
 gh_repo = 'https://github.com/weaming/{}'.format(name)
-version = '0.1.0'
+version = '0.1.1'
 
 setup(
     name=name,  # Required
@@ -23,6 +23,7 @@ setup(
 
     # This is a one-line description or tagline of what your project does.
     description='make processing 2d data more convenient',  # Required
+    long_description=long_description,  # Optional
 
     url=gh_repo,  # Optional
     author='weaming',  # Optional
