@@ -82,3 +82,4 @@ def merge_csv_list(file_path_list, fields=None):
                 _process_row(row)
 
     return rv
+
