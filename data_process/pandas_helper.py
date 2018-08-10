@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+from functools import reduce
 
 
 def sum_without_text_fields(df, exclude=None):
@@ -36,8 +37,20 @@ def as_float(df, fields):
             df[f] = df[f].astype(float)
 
 
-def aggregate_by_group(df, key):
+def aggregate_by_group(df, key, set_fields=None):
+    def column_set(series):
+        def set_reduce(x, y):
+            if isinstance(x, list):
+                return sorted(list(set(x + [y])))
+            return sorted([x, y])
+
+        return reduce(set_reduce, series)
+
     rv = df.groupby(key).sum()
+    if set_fields:
+        set_df = df.groupby(key).agg({k: column_set for k in set_fields})
+        rv = pd.concat([rv, set_df], axis=1)
+
     rv = rv.reset_index(level=[key])
     return rv
 
