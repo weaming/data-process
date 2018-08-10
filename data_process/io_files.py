@@ -3,8 +3,10 @@ import glob
 
 
 def file_list_in(root, pattern, **kwargs):
-    cwd = os.getcwd()
-    os.chdir(root)
+    if root[-1] != '/':
+        root += '/'
+    pattern = root + pattern
+    print(pattern)
     rv = glob.glob(pattern, **kwargs)
-    os.chdir(cwd)
+    rv = [x[len(root):] for x in rv]
     return rv
