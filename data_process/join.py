@@ -45,18 +45,18 @@ def _join(
     a_groups = {
         k: [
             replace_dict_keys(
-                item,
-                lambda k: get_unique_key(all_origin_fields, k, a_prefix, force)
-            ) for item in a_groups[k]
+                item, lambda k: get_unique_key(all_origin_fields, k, a_prefix, force)
+            )
+            for item in a_groups[k]
         ]
         for k in a_groups.keys()
     }
     b_groups = {
         k: [
             replace_dict_keys(
-                item,
-                lambda k: get_unique_key(all_origin_fields, k, b_prefix, force)
-            ) for item in b_groups[k]
+                item, lambda k: get_unique_key(all_origin_fields, k, b_prefix, force)
+            )
+            for item in b_groups[k]
         ]
         for k in b_groups.keys()
     }
@@ -70,7 +70,8 @@ def _join(
         b_list = b_groups.get(g)
 
         # three join types
-        if left and right and a_list and b_list:
+        # inner join
+        if not left and not right and a_list and b_list:
             for a in a_list:
                 for b in b_list:
                     data = defaultdict(lambda: None)
@@ -78,12 +79,12 @@ def _join(
 
                     data.update(a)
                     data.update(b)
+        # left join
         elif left and a_list:
             for a in a_list:
                 for b in b_list or [
                     {
-                        get_unique_key(all_origin_fields, k, b_prefix, force):
-                        None
+                        get_unique_key(all_origin_fields, k, b_prefix, force): None
                         for k in b_keys
                     }
                 ]:
@@ -92,13 +93,32 @@ def _join(
 
                     data.update(a)
                     data.update(b)
+        # right join
         elif right and b_list:
             for b in b_list:
                 for a in a_list or [
                     {
-                        get_unique_key(all_origin_fields, k, b_prefix, force):
-                        None
+                        get_unique_key(all_origin_fields, k, a_prefix, force): None
                         for k in a_keys
+                    }
+                ]:
+                    data = defaultdict(lambda: None)
+                    rv.append(data)
+
+                    data.update(a)
+                    data.update(b)
+        # outer join
+        elif left and right:
+            for a in a_list or [
+                {
+                    get_unique_key(all_origin_fields, k, a_prefix, force): None
+                    for k in a_keys
+                }
+            ]:
+                for b in b_list or [
+                    {
+                        get_unique_key(all_origin_fields, k, b_prefix, force): None
+                        for k in b_keys
                     }
                 ]:
                     data = defaultdict(lambda: None)
