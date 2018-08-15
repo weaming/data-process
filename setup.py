@@ -14,7 +14,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 name = 'data-process'
 gh_repo = 'https://github.com/weaming/{}'.format(name)
-version = '0.1.9'
+version = '0.1.10'
 
 setup(
     name=name,  # Required
