@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import chain
 from .group_by import group_by
+from .iter_dict import replace_dict_keys
 
 
 def get_count_in_list(lst, k):
@@ -13,7 +14,8 @@ def get_unique_key(lst, key, prefix, force=False):
     return key
 
 
-def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True, a_prefix='a.', b_prefix='b.', force=False):
+def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True, a_prefix='a.', b_prefix='b.',
+          force=False):
     """
     condition: data's key is unique
 
@@ -29,11 +31,10 @@ def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True,
     all_origin_fields = list(chain(data_list_a[0].keys(), data_list_b[0].keys()))
     a_groups = group_by(data_list_a, a_get_key)
     b_groups = group_by(data_list_b, b_get_key)
-
+    
     # extract the only one data
-    a_groups = {get_unique_key(all_origin_fields, k, a_prefix, force): a_groups[k][0] for k in a_groups.keys()}
-
-    b_groups = {get_unique_key(all_origin_fields, k, b_prefix, force): b_groups[k][0] for k in b_groups.keys()}
+    a_groups = {k: replace_dict_keys(a_groups[k][0], lambda k: get_unique_key(all_origin_fields, k, a_prefix, force)) for k in a_groups.keys()}
+    b_groups = {k: replace_dict_keys(b_groups[k][0], lambda k: get_unique_key(all_origin_fields, k, b_prefix, force)) for k in b_groups.keys()}
 
     all_fields = chain(a_groups.keys(), b_groups.keys())
 

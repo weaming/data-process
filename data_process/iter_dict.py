@@ -73,6 +73,10 @@ def get_fn_float(ndigit=2, decimal=True):
     return value_float
 
 
+def replace_dict_keys(data, new_key_fn):
+    return {new_key_fn(k): data[k] for k in data}
+
+
 def test():
     class FixFloatDictIterator(DictIterator):
         def init(self):
