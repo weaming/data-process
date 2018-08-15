@@ -7,13 +7,13 @@ def get_count_in_list(lst, k):
     return sum(map(lambda x: 1 if x == k else 0, lst))
 
 
-def get_unique_key(lst, key, prefix):
-    if get_count_in_list(lst, key) > 1:
+def get_unique_key(lst, key, prefix, force=False):
+    if force or get_count_in_list(lst, key) > 1:
         return prefix + key
     return key
 
 
-def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True, a_prefix='a.', b_prefix='b.'):
+def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True, a_prefix='a.', b_prefix='b.', force=False):
     """
     condition: data's key is unique
 
@@ -31,9 +31,9 @@ def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True,
     b_groups = group_by(data_list_b, b_get_key)
 
     # extract the only one data
-    a_groups = {get_unique_key(all_origin_fields, k, a_prefix): a_groups[k][0] for k in a_groups.keys()}
+    a_groups = {get_unique_key(all_origin_fields, k, a_prefix, force): a_groups[k][0] for k in a_groups.keys()}
 
-    b_groups = {get_unique_key(all_origin_fields, k, b_prefix): b_groups[k][0] for k in b_groups.keys()}
+    b_groups = {get_unique_key(all_origin_fields, k, b_prefix, force): b_groups[k][0] for k in b_groups.keys()}
 
     all_fields = chain(a_groups.keys(), b_groups.keys())
 
