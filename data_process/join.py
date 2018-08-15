@@ -26,8 +26,6 @@ def _join(
     force=False,
 ):
     """
-    condition: data's key is unique
-
     :param data_list_a:
     :param data_list_b:
     :param a_get_key:
@@ -36,40 +34,79 @@ def _join(
     :param right:
     :return:
     """
+    a_keys = data_list_a[0].keys()
+    b_keys = data_list_b[0].keys()
+    all_origin_fields = list(chain(a_keys, b_keys))
 
-    all_origin_fields = list(chain(data_list_a[0].keys(), data_list_b[0].keys()))
     a_groups = group_by(data_list_a, a_get_key)
     b_groups = group_by(data_list_b, b_get_key)
 
-    # extract the only one data
+    # replace keys of dict in groups
     a_groups = {
-        k: replace_dict_keys(
-            a_groups[k][0],
-            lambda k: get_unique_key(all_origin_fields, k, a_prefix, force),
-        )
+        k: [
+            replace_dict_keys(
+                item,
+                lambda k: get_unique_key(all_origin_fields, k, a_prefix, force)
+            ) for item in a_groups[k]
+        ]
         for k in a_groups.keys()
     }
     b_groups = {
-        k: replace_dict_keys(
-            b_groups[k][0],
-            lambda k: get_unique_key(all_origin_fields, k, b_prefix, force),
-        )
+        k: [
+            replace_dict_keys(
+                item,
+                lambda k: get_unique_key(all_origin_fields, k, b_prefix, force)
+            ) for item in b_groups[k]
+        ]
         for k in b_groups.keys()
     }
 
-    all_fields = chain(a_groups.keys(), b_groups.keys())
+    all_group_names = chain(a_groups.keys(), b_groups.keys())
 
+    # loop on all groups
     rv = []
-    for k in all_fields:
-        a = a_groups.get(k)
-        b = b_groups.get(k)
+    for g in all_group_names:
+        a_list = a_groups.get(g)
+        b_list = b_groups.get(g)
 
-        data = defaultdict(lambda: None)
-        rv.append(data)
-        if a and left:
-            data.update(a)
-        if b and right:
-            data.update(b)
+        # three join types
+        if left and right and a_list and b_list:
+            for a in a_list:
+                for b in b_list:
+                    data = defaultdict(lambda: None)
+                    rv.append(data)
+
+                    data.update(a)
+                    data.update(b)
+        elif left and a_list:
+            for a in a_list:
+                for b in b_list or [
+                    {
+                        get_unique_key(all_origin_fields, k, b_prefix, force):
+                        None
+                        for k in b_keys
+                    }
+                ]:
+                    data = defaultdict(lambda: None)
+                    rv.append(data)
+
+                    data.update(a)
+                    data.update(b)
+        elif right and b_list:
+            for b in b_list:
+                for a in a_list or [
+                    {
+                        get_unique_key(all_origin_fields, k, b_prefix, force):
+                        None
+                        for k in a_keys
+                    }
+                ]:
+                    data = defaultdict(lambda: None)
+                    rv.append(data)
+
+                    data.update(a)
+                    data.update(b)
+
     return rv
 
 

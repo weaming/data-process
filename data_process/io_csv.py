@@ -30,7 +30,7 @@ def new_csv_writer(path, fields, csv_format=None):
         if path is None:
             f = sys.stdout
         else:
-            f = io.open(path, 'w', encoding='utf-8')
+            f = open(path, 'w')
         yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
         yv.writeheader()
         yield yv
