@@ -18,5 +18,5 @@ def json_dumps(data, *args, **kwargs):
     return json.dumps(data, *args, default=json_serializer, **kwargs)
 
 
-def green_dict(d: dict):
+def green_dict(d):  # type: (dict) -> dict
     return json.loads(json_dumps(d))

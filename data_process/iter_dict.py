@@ -12,7 +12,7 @@ def is_float(value):
 
 
 class DictIterator(object):
-    def __init__(self, data: dict):
+    def __init__(self, data):  # type: (dict) -> None
         self.data = copy.deepcopy(data)
         if hasattr(self, 'init') and callable(self.init):
             self.init()
@@ -20,7 +20,7 @@ class DictIterator(object):
     def transfer(self):
         return self._transfer_dict(self.data)
 
-    def _transfer_dict(self, data: dict):
+    def _transfer_dict(self, data):  # type: (dict) -> dict
         for k, v in data.items():
             data[k] = self._transfer_value(v)
         return self.value_dict(data)

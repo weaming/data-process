@@ -31,7 +31,7 @@ def _join(data_list_a, data_list_b, a_get_key, b_get_key, left=True, right=True,
     all_origin_fields = list(chain(data_list_a[0].keys(), data_list_b[0].keys()))
     a_groups = group_by(data_list_a, a_get_key)
     b_groups = group_by(data_list_b, b_get_key)
-    
+
     # extract the only one data
     a_groups = {k: replace_dict_keys(a_groups[k][0], lambda k: get_unique_key(all_origin_fields, k, a_prefix, force)) for k in a_groups.keys()}
     b_groups = {k: replace_dict_keys(b_groups[k][0], lambda k: get_unique_key(all_origin_fields, k, b_prefix, force)) for k in b_groups.keys()}

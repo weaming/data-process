@@ -1,7 +1,7 @@
 # the library name
 name = data-process
 # may change to pip3 or python3 -m pip, etc.
-pip = pip3
+pip = pip
 
 .PHONY: build
 build:
