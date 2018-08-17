@@ -30,7 +30,7 @@ class DictIterator(object):
             return self.value_float(v)
         if isinstance(v, int):
             return self.value_int(v)
-        elif isinstance(v, str):
+        elif isinstance(v, (str, unicode)):
             return self.value_string(v)
         elif isinstance(v, list):
             rv = [self._transfer_value(x) for x in v]

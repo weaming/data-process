@@ -18,7 +18,7 @@ class DateProcessException(Exception):
 
 def to_date_object(date, allowed_date_format_list=None, raise_if_fail=True):
     allowed_date_format_list = allowed_date_format_list or default_formats
-    if isinstance(date, str):
+    if isinstance(date, (str, unicode)):
         for fmt in allowed_date_format_list:
             try:
                 return datetime.datetime.strptime(date, fmt)
