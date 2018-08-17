@@ -11,6 +11,6 @@ def read_json(fp):
         return json.loads(f.read())
 
 
-def save_json(fp, data):
+def save_json(fp, data, **kwargs):
     with open(fp, "w") as f:
-        return f.write(json_dumps(data))
+        return f.write(json_dumps(data, **kwargs))

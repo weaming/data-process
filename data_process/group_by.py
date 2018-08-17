@@ -11,7 +11,7 @@ def group_by(data_list, get_group_key, item_fn=None):
                 groups[k].append(item_fn(x) if item_fn else x)
         else:
             groups[key].append(item_fn(x) if item_fn else x)
-    return groups
+    return dict(groups)
 
 
 def group_by_function_list(data_list, get_key_fn_list, item_fn=None):
