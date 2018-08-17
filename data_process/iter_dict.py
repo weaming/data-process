@@ -39,7 +39,9 @@ class DictIterator(object):
             rv = self._transfer_dict(v)
             return self.value_dict(rv)
         else:
-            raise Exception('unprocessed value: {}, type: {}'.format(v, type(v)))
+            raise Exception(
+                'unprocessed value: {}, type: {}'.format(v, type(v))
+            )
 
     def value_list(self, v):
         return v
@@ -73,8 +75,12 @@ def get_fn_float(ndigit=2, decimal=True):
     return value_float
 
 
-def replace_dict_keys(data, new_key_fn):
+def replace_dict_keys(data, new_key_fn):  # type: (dict, (str -> str)) -> dict
     return {new_key_fn(k): data[k] for k in data}
+
+
+def rename_dict(data, mapping):  # type: (dict, dict) -> dict
+    return {v: data[k] for k, v in mapping.items() if v}
 
 
 def test():
