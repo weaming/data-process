@@ -11,3 +11,13 @@ def rename_dict(data, mapping):  # type: (dict, dict) -> dict
 
 def infinite_default_dict():
     return defaultdict(infinite_default_dict)
+
+
+def filter_dict_by_keys(data, required_keys, get_default=None):
+    def get_value(k):
+        if get_default:
+            return data.get(k, get_default(k))
+        else:
+            return data[k]
+
+    return {k: get_value(k) for k in required_keys}
