@@ -6,7 +6,7 @@ def is_float(value):
     if isinstance(value, (float, Decimal)):
         return True
     if isinstance(value, str):
-        if all(x in '0123456789.' for x in value):
+        if all(x in "0123456789." for x in value):
             return True
     return False
 
@@ -14,7 +14,7 @@ def is_float(value):
 class DictIterator(object):
     def __init__(self, data):  # type: (dict) -> None
         self.data = copy.deepcopy(data)
-        if hasattr(self, 'init') and callable(self.init):
+        if hasattr(self, "init") and callable(self.init):
             self.init()
 
     def transfer(self):
@@ -39,9 +39,7 @@ class DictIterator(object):
             rv = self._transfer_dict(v)
             return self.value_dict(rv)
         else:
-            raise Exception(
-                'unprocessed value: {}, type: {}'.format(v, type(v))
-            )
+            raise Exception("unprocessed value: {}, type: {}".format(v, type(v)))
 
     def value_list(self, v):
         return v
@@ -67,20 +65,12 @@ class ObjectifyDict(dict):
 
 def get_fn_float(ndigit=2, decimal=True):
     def value_float(value):
-        rv = ('{:.%sf}' % ndigit).format(Decimal(value))
+        rv = ("{:.%sf}" % ndigit).format(Decimal(value))
         if decimal:
             return Decimal(rv)
         return rv
 
     return value_float
-
-
-def replace_dict_keys(data, new_key_fn):  # type: (dict, (str -> str)) -> dict
-    return {new_key_fn(k): data[k] for k in data}
-
-
-def rename_dict(data, mapping):  # type: (dict, dict) -> dict
-    return {v: data[k] for k, v in mapping.items() if v}
 
 
 def test():
@@ -92,12 +82,9 @@ def test():
             return ObjectifyDict(v)
 
     data = {
-        'a': '3.0000000001',
-        'b': ['4.243420004'],
-        'c': {
-            'cc': '34.00003',
-            'cd': '32.23423423',
-        },
+        "a": "3.0000000001",
+        "b": ["4.243420004"],
+        "c": {"cc": "34.00003", "cd": "32.23423423"},
     }
 
     iterator = FixFloatDictIterator(data)

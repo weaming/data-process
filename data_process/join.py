@@ -1,7 +1,7 @@
 from collections import defaultdict
 from itertools import chain
 from .group_by import group_by
-from .iter_dict import replace_dict_keys
+from .dict_helper import replace_dict_keys
 
 
 def get_count_in_list(lst, k):
