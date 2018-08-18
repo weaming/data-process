@@ -23,7 +23,7 @@ CSV_FORMAT_PARAMS = dict(
 
 
 @contextmanager
-def new_csv_writer(path, fields, csv_format=None):
+def new_csv_writer(path, fields, csv_format=None, keep_open=False):
     f = None
     try:
         if path is None:
@@ -36,7 +36,8 @@ def new_csv_writer(path, fields, csv_format=None):
         yv.writeheader()
         yield yv
     finally:
-        f and f.close()
+        if f and not keep_open:
+            f.close()
 
 
 @contextmanager
