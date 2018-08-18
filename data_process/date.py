@@ -1,7 +1,6 @@
 import datetime
 import calendar
 
-from django.utils import timezone
 from .date_range import date_range
 
 DATE_FORMAT_DAY = '%Y-%m-%d'
@@ -70,7 +69,14 @@ def today(with_tz=False):
 
 def now(with_tz=False):
     if with_tz:
-        return timezone.now()
+        try:
+            from django.utils import timezone
+            return timezone.now()
+        except Exception:
+            import pytz
+            u = datetime.datetime.utcnow()
+            u = u.replace(tzinfo=pytz.utc)
+            return u
     else:
         return datetime.datetime.now()
 
