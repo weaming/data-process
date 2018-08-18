@@ -61,8 +61,8 @@ def process_row_generator(fields, generator, output, process_row=_process_row):
     c = 0
 
     with new_csv_writer(output, fields) as writer:
-        for i in generator():
-            process_row(writer, i)
+        for row in generator:
+            process_row(writer, row)
             c += 1
 
     return c
