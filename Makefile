@@ -23,3 +23,8 @@ uninstall:
 .PHONY: clean
 clean:
 	rm -fr build dist *.egg-info
+
+.POONY: test-io-csv
+test-io-csv:
+	python test_io_csv.py
+	python3 test_io_csv.py

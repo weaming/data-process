@@ -11,7 +11,6 @@ def read_csv():
 process_row_generator(['a', 'b', 'c'], read_csv, 'new.csv')
 """
 
-import io
 import csv
 import sys
 import os
@@ -32,7 +31,7 @@ def new_csv_writer(path, fields, csv_format=None):
         elif hasattr(path, 'write'):
             f = path
         else:
-            f = io.open(path, 'w', newline='', encoding='utf-8')
+            f = open(path, 'w')
         yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
         yv.writeheader()
         yield yv
@@ -47,7 +46,7 @@ def new_csv_reader(path, fields=None, csv_format=None):
         if hasattr(path, 'read'):
             f = path
         else:
-            f = io.open(path, 'r', encoding='utf-8')
+            f = open(path, 'r')
         yield csv.DictReader(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
     finally:
         f and f.close()
