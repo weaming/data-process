@@ -29,6 +29,8 @@ def new_csv_writer(path, fields, csv_format=None):
     try:
         if path is None:
             f = sys.stdout
+        elif hasattr(path, 'write'):
+            f = path
         else:
             f = open(path, 'w')
         yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
@@ -42,7 +44,10 @@ def new_csv_writer(path, fields, csv_format=None):
 def new_csv_reader(path, fields=None, csv_format=None):
     f = None
     try:
-        f = io.open(path, 'r', encoding='utf-8')
+        if hasattr(path, 'read'):
+            f = path
+        else:
+            f = io.open(path, 'r', encoding='utf-8')
         yield csv.DictReader(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
     finally:
         f and f.close()
@@ -52,10 +57,10 @@ def _process_row(writer, row):
     writer.writerow(row)
 
 
-def process_row_generator(fields, generator, output_path, process_row=_process_row):
+def process_row_generator(fields, generator, output, process_row=_process_row):
     c = 0
 
-    with new_csv_writer(output_path, fields) as writer:
+    with new_csv_writer(output, fields) as writer:
         for i in generator():
             process_row(writer, i)
             c += 1
