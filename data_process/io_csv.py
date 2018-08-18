@@ -57,10 +57,10 @@ def _process_row(writer, row):
     writer.writerow(row)
 
 
-def process_row_generator(fields, generator, output, process_row=_process_row):
+def process_row_generator(fields, generator, output, process_row=_process_row, **kwargs):
     c = 0
 
-    with new_csv_writer(output, fields) as writer:
+    with new_csv_writer(output, fields, **kwargs) as writer:
         for row in generator:
             process_row(writer, row)
             c += 1
