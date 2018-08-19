@@ -14,6 +14,7 @@ process_row_generator(['a', 'b', 'c'], read_csv, 'new.csv')
 import csv
 import sys
 import os
+import io
 from contextlib import contextmanager
 
 CSV_FORMAT_PARAMS = dict(
@@ -31,7 +32,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
         elif hasattr(path, 'write'):
             f = path
         else:
-            f = open(path, 'w')
+            f = io.open(path, 'w', encoding='utf-8', newline='')
         yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
         yv.writeheader()
         yield yv
@@ -47,7 +48,7 @@ def new_csv_reader(path, fields=None, csv_format=None):
         if hasattr(path, 'read'):
             f = path
         else:
-            f = open(path, 'r')
+            f = io.open(path, 'r', encoding='utf-8')
         yield csv.DictReader(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
     finally:
         f and f.close()
