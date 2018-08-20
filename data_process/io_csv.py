@@ -14,9 +14,7 @@ process_row_generator(['a', 'b', 'c'], read_csv, 'new.csv')
 import csv
 import sys
 import os
-import io
 from contextlib import contextmanager
-import fuck_str
 
 CSV_FORMAT_PARAMS = dict(delimiter=",", quotechar='"')
 
@@ -30,10 +28,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
         elif hasattr(path, "write"):
             f = path
         else:
-            f = io.open(path, "w", encoding="utf-8", newline="")
-
-        # ensure unicode
-        fields = [fuck_str.ensure_unicode(x) for x in fields]
+            f = open(path, 'w')
 
         yv = csv.DictWriter(
             f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS)
@@ -52,7 +47,7 @@ def new_csv_reader(path, fields=None, csv_format=None):
         if hasattr(path, "read"):
             f = path
         else:
-            f = io.open(path, "r", encoding="utf-8")
+            f = open(path)
         yield csv.DictReader(
             f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS)
         )
@@ -61,10 +56,6 @@ def new_csv_reader(path, fields=None, csv_format=None):
 
 
 def _process_row(writer, row):
-    row = {
-        fuck_str.ensure_unicode(k): fuck_str.ensure_unicode(v)
-        for k, v in row.items()
-    }
     writer.writerow(row)
 
 
