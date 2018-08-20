@@ -1,5 +1,8 @@
 import copy
 from decimal import Decimal
+from sys import version_info
+
+is_py2 = version_info[0] == 2
 
 
 def is_float(value):
@@ -30,8 +33,15 @@ class DictIterator(object):
             return self.value_float(v)
         if isinstance(v, int):
             return self.value_int(v)
-        elif isinstance(v, (str, unicode)):
-            return self.value_string(v)
+        elif isinstance(v, str):
+            # str(bytes) in python2 and str(unicode) in python3
+            return self.value_str(v)
+        elif isinstance(v, bytes):
+            # exactly bytes
+            return self.value_bytes(v)
+        elif is_py2 and isinstance(v, unicode):
+            # exactly unicode, only in python2
+            return self.value_unicode(v)
         elif isinstance(v, list):
             rv = [self._transfer_value(x) for x in v]
             return self.value_list(rv)
@@ -47,7 +57,13 @@ class DictIterator(object):
     def value_dict(self, v):
         return v
 
-    def value_string(self, value):
+    def value_str(self, value):
+        return value
+
+    def value_bytes(self, value):
+        return value
+
+    def value_unicode(self, value):
         return value
 
     def value_float(self, value):
@@ -73,20 +89,22 @@ def get_fn_float(ndigit=2, decimal=True):
     return value_float
 
 
-def test():
+def get_fixed_float_dict_iterator(ndigit=3):
     class FixFloatDictIterator(DictIterator):
         def init(self):
-            self.value_float = get_fn_float(ndigit=3, decimal=True)
+            self.value_float = get_fn_float(ndigit=ndigit, decimal=True)
 
         def value_dict(self, v):
             return ObjectifyDict(v)
 
+
+def test():
     data = {
         "a": "3.0000000001",
         "b": ["4.243420004"],
         "c": {"cc": "34.00003", "cd": "32.23423423"},
     }
 
-    iterator = FixFloatDictIterator(data)
+    iterator = get_fixed_float_dict_iterator()(data)
     print(iterator.transfer())
     print(data)
