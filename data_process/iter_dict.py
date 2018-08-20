@@ -96,6 +96,7 @@ def get_fixed_float_dict_iterator(ndigit=3):
 
         def value_dict(self, v):
             return ObjectifyDict(v)
+    return FixFloatDictIterator
 
 
 def test():
