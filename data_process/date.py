@@ -3,10 +3,11 @@ import calendar
 
 from .date_range import date_range
 
-DATE_FORMAT_DAY = '%Y-%m-%d'
-DATE_FORMAT_MONTH = '%Y-%m'
-DATE_FORMAT_YEAR = '%Y'
-DATE_FORMAT_MONTH_ABBR = '%b %Y'
+
+DATE_FORMAT_DAY = "%Y-%m-%d"
+DATE_FORMAT_MONTH = "%Y-%m"
+DATE_FORMAT_YEAR = "%Y"
+DATE_FORMAT_MONTH_ABBR = "%b %Y"
 
 default_formats = (DATE_FORMAT_DAY, DATE_FORMAT_MONTH, DATE_FORMAT_YEAR)
 
@@ -15,17 +16,30 @@ class DateProcessException(Exception):
     pass
 
 
+def is_string(x):
+    from sys import version_info
+
+    is_py2 = version_info[0] == 2
+
+    if is_py2:
+        return isinstance(x, (str, unicode))
+    else:
+        return isinstance(x, str)
+
+
 def to_date_object(date, allowed_date_format_list=None, raise_if_fail=True):
     allowed_date_format_list = allowed_date_format_list or default_formats
-    if isinstance(date, (str, unicode)):
+    if is_string(date):
         for fmt in allowed_date_format_list:
             try:
-                return datetime.datetime.strptime(date, fmt)
+                return datetime.datetime.strptime(date, fmt).date()
             except ValueError as e:
                 if not raise_if_fail:
-                    print('ignore parse date exception: {}'.format(e))
+                    print("ignore parse date exception: {}".format(e))
         if raise_if_fail:
-            exc_text = '{} is not a valid date format [{}]'.format(date, ', '.join(allowed_date_format_list))
+            exc_text = "{} is not a valid date format [{}]".format(
+                date, ", ".join(allowed_date_format_list)
+            )
             raise DateProcessException(exc_text)
     return date
 
@@ -71,9 +85,11 @@ def now(with_tz=False):
     if with_tz:
         try:
             from django.utils import timezone
+
             return timezone.now()
         except Exception:
             import pytz
+
             u = datetime.datetime.utcnow()
             u = u.replace(tzinfo=pytz.utc)
             return u
@@ -89,18 +105,14 @@ def get_days_of_year(year):
 
 def get_start_end_daily(date):
     date = to_date_object(
-        date,
-        raise_if_fail=True,
-        allowed_date_format_list=[DATE_FORMAT_DAY]
+        date, raise_if_fail=True, allowed_date_format_list=[DATE_FORMAT_DAY]
     )
     return date, date
 
 
 def get_start_end_monthly(date):
     date = to_date_object(
-        date,
-        raise_if_fail=True,
-        allowed_date_format_list=[DATE_FORMAT_MONTH]
+        date, raise_if_fail=True, allowed_date_format_list=[DATE_FORMAT_MONTH]
     )
 
     start = get_first_day_of_month(date)
@@ -110,9 +122,7 @@ def get_start_end_monthly(date):
 
 def get_start_end_yearly(date):
     date = to_date_object(
-        date,
-        raise_if_fail=True,
-        allowed_date_format_list=[DATE_FORMAT_YEAR]
+        date, raise_if_fail=True, allowed_date_format_list=[DATE_FORMAT_YEAR]
     )
 
     days_of_year = get_days_of_year(date.year)
@@ -120,7 +130,9 @@ def get_start_end_yearly(date):
 
 
 def to_month_abbreviated_format(date_str):
-    return datetime.datetime.strptime(date_str, DATE_FORMAT_MONTH).strftime(DATE_FORMAT_MONTH_ABBR)
+    return datetime.datetime.strptime(date_str, DATE_FORMAT_MONTH).strftime(
+        DATE_FORMAT_MONTH_ABBR
+    )
 
 
 def convert_date_format(date_str, in_format, out_format):
