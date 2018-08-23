@@ -26,7 +26,7 @@ def group_by_function_list(
             data_list,
             get_key_fn_list[0],
             item_fn=item_fn,
-            tail_list_fn=tail_list_fn,
+            tail_list_fn=tail_list_fn
         )
     else:
         groups = group_by(data_list, get_key_fn_list[0])
@@ -35,7 +35,37 @@ def group_by_function_list(
                 v,
                 get_key_fn_list[1:],
                 item_fn=item_fn,
-                tail_list_fn=tail_list_fn,
+                tail_list_fn=tail_list_fn
             )
             for k, v in groups.items()
         }
+
+
+def _degroup(data, depth, depth_range, tail_list_fn=None):
+    if depth > depth_range[-1]:
+        return data
+
+    if depth in depth_range:
+        rv = []
+        for x in data.values():
+            x_rv = _degroup(x, depth + 1, depth_range, tail_list_fn)
+            if isinstance(x_rv, list):
+                rv += x_rv
+            else:
+                rv.append(x_rv)
+        if depth == depth_range[-1] and tail_list_fn:
+            return tail_list_fn(rv)
+        return rv
+    else:
+        return {
+            k: _degroup(v, depth + 1, depth_range, tail_list_fn)
+            for k, v in data.items()
+        }
+
+
+def degroup_by_depth_range(data, depth_range, tail_list_fn=None):
+    """
+    :params data: dict grouped by group_by_function_list()
+    :params depth_range: range numbers
+    """
+    return _degroup(data, 1, sorted(depth_range), tail_list_fn)
