@@ -65,7 +65,7 @@ def _degroup(data, depth, depth_range, tail_list_fn=None):
 
 def degroup_by_depth_range(data, depth_range, tail_list_fn=None):
     """
-    :params data: dict grouped by group_by_function_list()
-    :params depth_range: range numbers
+    :param data: dict grouped by group_by_function_list()
+    :param depth_range: range numbers
     """
     return _degroup(data, 1, sorted(depth_range), tail_list_fn)
