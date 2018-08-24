@@ -2,6 +2,7 @@ import datetime
 import calendar
 
 from .date_range import date_range
+from . import is_py2
 
 
 DATE_FORMAT_DAY = "%Y-%m-%d"
@@ -17,10 +18,6 @@ class DateProcessException(Exception):
 
 
 def is_string(x):
-    from sys import version_info
-
-    is_py2 = version_info[0] == 2
-
     if is_py2:
         return isinstance(x, (str, unicode))
     else:

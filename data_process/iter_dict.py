@@ -1,8 +1,6 @@
 import copy
 from decimal import Decimal
-from sys import version_info
-
-is_py2 = version_info[0] == 2
+from . import is_py2
 
 
 def is_float(value):
@@ -96,6 +94,7 @@ def get_fixed_float_dict_iterator(ndigit=3):
 
         def value_dict(self, v):
             return ObjectifyDict(v)
+
     return FixFloatDictIterator
 
 
