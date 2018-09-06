@@ -28,11 +28,9 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
         elif hasattr(path, "write"):
             f = path
         else:
-            f = open(path, 'w')
+            f = open(path, "w")
 
-        yv = csv.DictWriter(
-            f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS)
-        )
+        yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
         yv.writeheader()
         yield yv
     finally:
@@ -48,9 +46,7 @@ def new_csv_reader(path, fields=None, csv_format=None):
             f = path
         else:
             f = open(path)
-        yield csv.DictReader(
-            f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS)
-        )
+        yield csv.DictReader(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
     finally:
         f and f.close()
 
@@ -91,3 +87,11 @@ def merge_csv_list(file_path_list, fields=None, csv_format=None):
                 _process_row(row)
 
     return rv
+
+
+def save_csv(data, out_path):
+    fields = sorted(data[0].keys())
+    with new_csv_writer(out_path, fields) as writer:
+        for row in data:
+            writer.writerow(row)
+    return len(data)
