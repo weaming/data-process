@@ -7,7 +7,7 @@ def is_float(value):
     if isinstance(value, (float, Decimal)):
         return True
     if isinstance(value, str):
-        if all(x in "-0123456789." for x in value):
+        if all(x in "0123456789." for x in (value[1:] if value[0] == '-' else value)):
             return True
     return False
 
