@@ -8,7 +8,7 @@ iter_types = tuple(iter_types)
 
 
 def flat_list(data):
-    if not isinstance(data, (tuple, list)):
+    if not isinstance(data, iter_types):
         return data
 
     rv = []
