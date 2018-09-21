@@ -1,16 +1,3 @@
-"""
-from data_process.io_csv import new_csv_reader, process_row_generator
-
-
-def read_csv():
-    with new_csv_reader('origin.csv') as reader:
-        for row in reader:
-            yield row  # ordered dict
-
-
-process_row_generator(['a', 'b', 'c'], read_csv, 'new.csv')
-"""
-
 import csv
 import sys
 import os
@@ -95,3 +82,8 @@ def save_csv(data, out_path):
         for row in data:
             writer.writerow(row)
     return len(data)
+
+
+def read_csv(path):
+    with new_csv_reader(path) as reader:
+        return list(reader)
