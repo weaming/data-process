@@ -2,6 +2,7 @@ import csv
 import sys
 import os
 from contextlib import contextmanager
+from . import is_py2
 
 CSV_FORMAT_PARAMS = dict(delimiter=",", quotechar='"')
 
@@ -76,8 +77,10 @@ def merge_csv_list(file_path_list, fields=None, csv_format=None):
     return rv
 
 
-def save_csv(data, out_path):
-    fields = sorted(data[0].keys())
+def save_csv(data, out_path, sort=is_py2):
+    fields = data[0].keys()
+    if sort:
+        fields = sorted(fields)
     with new_csv_writer(out_path, fields) as writer:
         for row in data:
             writer.writerow(row)

@@ -24,7 +24,7 @@ install_requires = [
 
 name = "data-process"
 gh_repo = "https://github.com/weaming/{}".format(name)
-version = "0.2.0"
+version = "0.2.1"
 
 setup(
     name=name,  # Required
