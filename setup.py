@@ -1,5 +1,6 @@
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+import re
 from os import path
 from io import open
 
@@ -15,6 +16,14 @@ def _read(fname):
         return ""
 
 
+def get_version(path):
+    src = _read(path)
+    pat = re.compile(r"""^version = ['"](.+?)['"]$""", re.MULTILINE)
+    result = pat.search(src)
+    version = result.group(1)
+    return version
+
+
 long_description = _read("README.md")
 install_requires = [
     l
@@ -24,7 +33,7 @@ install_requires = [
 
 name = "data-process"
 gh_repo = "https://github.com/weaming/{}".format(name)
-version = "0.2.1"
+version = get_version("data_process/__init__.py")
 
 setup(
     name=name,  # Required

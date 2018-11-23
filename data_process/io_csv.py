@@ -8,7 +8,7 @@ CSV_FORMAT_PARAMS = dict(delimiter=",", quotechar='"')
 
 
 @contextmanager
-def new_csv_writer(path, fields, csv_format=None, keep_open=False):
+def new_csv_writer(path, headers, csv_format=None, keep_open=False):
     f = None
     try:
         if path is None:
@@ -18,7 +18,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
         else:
             f = open(path, "w")
 
-        yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
+        yv = csv.DictWriter(f, fieldnames=headers, **(csv_format or CSV_FORMAT_PARAMS))
         yv.writeheader()
         yield yv
     finally:
@@ -27,14 +27,14 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
 
 
 @contextmanager
-def new_csv_reader(path, fields=None, csv_format=None):
+def new_csv_reader(path, headers=None, csv_format=None):
     f = None
     try:
         if hasattr(path, "read"):
             f = path
         else:
             f = open(path)
-        yield csv.DictReader(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
+        yield csv.DictReader(f, fieldnames=headers, **(csv_format or CSV_FORMAT_PARAMS))
     finally:
         f and f.close()
 
@@ -44,11 +44,11 @@ def _process_row(writer, row):
 
 
 def process_row_generator(
-    fields, generator, output, process_row=_process_row, **kwargs
+    headers, generator, output, process_row=_process_row, **kwargs
 ):
     c = 0
 
-    with new_csv_writer(output, fields, **kwargs) as writer:
+    with new_csv_writer(output, headers, **kwargs) as writer:
         for row in generator:
             process_row(writer, row)
             c += 1
@@ -56,7 +56,7 @@ def process_row_generator(
     return c
 
 
-def merge_csv_list(file_path_list, fields=None, csv_format=None):
+def merge_csv_list(file_path_list, headers=None, csv_format=None):
     """
     merge data in some csv list to one list
 
@@ -70,18 +70,18 @@ def merge_csv_list(file_path_list, fields=None, csv_format=None):
     for fp in file_path_list:
         if not os.path.exists(fp):
             raise Exception("file {} does not exist".format(fp))
-        with new_csv_reader(fp, fields=fields, csv_format=csv_format) as reader:
+        with new_csv_reader(fp, headers=headers, csv_format=csv_format) as reader:
             for row in reader:
                 _process_row(row)
 
     return rv
 
 
-def save_csv(data, out_path, sort=is_py2):
-    fields = data[0].keys()
+def write_csv(data, out_path, sort=is_py2, headers=None):
+    headers = headers or data[0].keys()
     if sort:
-        fields = sorted(fields)
-    with new_csv_writer(out_path, fields) as writer:
+        headers = sorted(headers)
+    with new_csv_writer(out_path, headers) as writer:
         for row in data:
             writer.writerow(row)
     return len(data)

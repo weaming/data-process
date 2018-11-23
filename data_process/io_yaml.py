@@ -19,6 +19,6 @@ def read_yaml(path):
         return from_yaml(f.read())
 
 
-def save_yaml(data, out_path):
+def write_yaml(data, out_path):
     with open(out_path, "w") as f:
         f.write(to_yaml(data))
