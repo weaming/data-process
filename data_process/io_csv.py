@@ -77,11 +77,11 @@ def merge_csv_list(file_path_list, fields=None, csv_format=None):
     return rv
 
 
-def write_csv(data, out_path, sort=is_py2, fields=None):
+def write_csv(data, out_path, sort=is_py2, fields=None, writer_kwargs=None):
     fields = fields or data[0].keys()
     if sort:
         fields = sorted(fields)
-    with new_csv_writer(out_path, fields) as writer:
+    with new_csv_writer(out_path, fields, **writer_kwargs or {}) as writer:
         for row in data:
             writer.writerow(row)
     return len(data)
