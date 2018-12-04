@@ -1,4 +1,5 @@
 from yaml import load, dump
+from .io_files import prepare_dir
 
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -20,5 +21,6 @@ def read_yaml(path):
 
 
 def write_yaml(data, out_path):
+    prepare_dir(out_path)
     with open(out_path, "w") as f:
         f.write(to_yaml(data))

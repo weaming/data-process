@@ -3,6 +3,7 @@ import sys
 import os
 from contextlib import contextmanager
 from . import is_py2
+from .io_files import prepare_dir
 
 CSV_FORMAT_PARAMS = dict(delimiter=",", quotechar='"')
 
@@ -16,6 +17,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
         elif hasattr(path, "write"):
             f = path
         else:
+            prepare_dir(path)
             f = open(path, "w")
 
         yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
