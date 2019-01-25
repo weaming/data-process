@@ -9,7 +9,7 @@ CSV_FORMAT_PARAMS = dict(delimiter=",", quotechar='"')
 
 
 @contextmanager
-def new_csv_writer(path, fields, csv_format=None, keep_open=False):
+def new_csv_writer(path, fields, csv_format=None, keep_open=False, is_excel=False):
     f = None
     try:
         if path is None:
@@ -19,6 +19,9 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False):
         else:
             prepare_dir(path)
             f = open(path, "w")
+
+        if is_excel:
+            f.write('\ufeff')
 
         yv = csv.DictWriter(f, fieldnames=fields, **(csv_format or CSV_FORMAT_PARAMS))
         yv.writeheader()
