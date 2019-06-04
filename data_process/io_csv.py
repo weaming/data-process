@@ -14,7 +14,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False, is_excel=Fals
     try:
         if path is None:
             f = sys.stdout
-        elif hasattr(path, "write"):
+        elif hasattr(path, "write") or hasattr(path, "read"):
             f = path
         else:
             prepare_dir(path)
@@ -27,7 +27,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False, is_excel=Fals
         yv.writeheader()
         yield yv
     finally:
-        if f and not keep_open:
+        if f and hasattr(f, 'close') and not keep_open:
             f.close()
 
 
