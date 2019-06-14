@@ -1,3 +1,4 @@
+import os
 from yaml import load, dump
 from .io_files import prepare_dir
 
@@ -7,8 +8,16 @@ except ImportError:
     from yaml import Loader, Dumper
 
 
-def to_yaml(data):
-    return dump(data, Dumper=Dumper, default_flow_style=False, allow_unicode=True)
+def to_yaml(data, sort_keys=None):
+    if sort_keys is None:
+        sort_keys = bool(os.getenv("SORT_KEYS"))
+    return dump(
+        data,
+        Dumper=Dumper,
+        default_flow_style=False,
+        allow_unicode=True,
+        sort_keys=sort_keys,
+    )
 
 
 def from_yaml(stream):
