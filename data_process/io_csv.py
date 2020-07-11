@@ -1,7 +1,10 @@
 import csv
 import sys
 import os
+import json
+from typing import Iterable
 from contextlib import contextmanager
+
 from . import is_py2
 from .io_files import prepare_dir
 
@@ -17,6 +20,7 @@ def new_csv_writer(path, fields, csv_format=None, keep_open=False, is_excel=Fals
         elif hasattr(path, "write") or hasattr(path, "read"):
             f = path
         else:
+            path = os.path.expanduser(os.path.expandvars(path))
             prepare_dir(path)
             f = open(path, "w")
 
@@ -82,8 +86,23 @@ def merge_csv_list(file_path_list, fields=None, csv_format=None):
     return rv
 
 
-def write_csv(data, out_path, sort=is_py2, fields=None, writer_kwargs=None):
-    fields = fields or data[0].keys()
+def write_csv(data: Iterable[dict], out_path, sort=is_py2, fields=None, writer_kwargs=None):
+    data = list(data)
+    # serialize csv values
+    for x in data:
+        for k, v in x.items():
+            if isinstance(v, (list, tuple, dict)):
+                x[k] = json.dumps(v, ensure_ascii=False)
+            elif v is None:
+                x[k] = ''
+
+    if not fields:
+        fields = set()
+        for x in data:
+            for k, v in x.items():
+                fields.add(k)
+        fields = sorted(fields)
+
     if sort:
         fields = sorted(fields)
     with new_csv_writer(out_path, fields, **writer_kwargs or {}) as writer:
