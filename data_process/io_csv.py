@@ -8,6 +8,19 @@ from contextlib import contextmanager
 from . import is_py2
 from .io_files import prepare_dir
 
+# https://stackoverflow.com/a/15063941/5281824
+import csv
+
+maxInt = sys.maxsize
+while True:
+    # decrease the maxInt value by factor 10
+    # as long as the OverflowError occurs.
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt / 10)
+
 CSV_FORMAT_PARAMS = dict(delimiter=",", quotechar='"')
 
 
@@ -86,7 +99,9 @@ def merge_csv_list(file_path_list, fields=None, csv_format=None):
     return rv
 
 
-def write_csv(data: Iterable[dict], out_path, sort=is_py2, fields=None, writer_kwargs=None):
+def write_csv(
+    data: Iterable[dict], out_path, sort=is_py2, fields=None, writer_kwargs=None
+):
     data = list(data)
     # serialize csv values
     for x in data:
