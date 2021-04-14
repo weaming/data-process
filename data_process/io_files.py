@@ -13,5 +13,8 @@ def prepare_dir(path):
     if not path.endswith("/"):
         path = os.path.dirname(path)
 
+    if not path:
+        return
+
     if not os.path.isdir(path):
         os.makedirs(path)
